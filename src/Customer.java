@@ -31,4 +31,8 @@ public class Customer {
     public void setCustomerName(String customerName) {
         this.customerName = customerName;
     }
+
+    public ArrayList<Double> getTransactionList(){
+        return this.transactionList;
+    }
 }

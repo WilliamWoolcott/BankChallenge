@@ -7,20 +7,20 @@ public class Branch {
 
     public Branch(String branchName){
         this.branchName = branchName;
+        this.customerList = new ArrayList<Customer>();
     }
 
     public boolean addCustomer(String customerName, double transaction){
-        if (findCustomer(customerName) == null){
-            return false;
-        }
-        else{
+        Customer customer = findCustomer(customerName);
+        if (customer == null){
             customerList.add(new Customer(customerName, transaction));
             return true;
         }
+        return false;
     }
 
     public boolean addTransaction(String customerName, double transaction) {
-        if (findCustomer(customerName) == null) {
+        if (findCustomer(customerName) != null) {
             findCustomer(customerName).addTransaction(transaction);
             return true;
         }
@@ -28,25 +28,21 @@ public class Branch {
     }
 
     public Customer findCustomer(String customerName){
-        for(int i = 0; i < customerList.size(); i++){
-            if(this.customerList.get(i).getCustomerName().equals(customerName)){
-                return this.customerList.get(i);
+        for(int i = 0; i < this.customerList.size(); i++){
+            Customer customer = this.customerList.get(i);
+            if(customer.getCustomerName().equals(customerName)){
+                return customer;
             }
         }
         return null;
     }
 
-    public void listCustomers(){
-        for(int i = 0; i < customerList.size(); i++){
-            System.out.println(customerList.get(i).getCustomerName() + ": \n");
-            for(int j = 0; j < customerList.get(i).getTransactionListSize(); j++){
-                customerList.get(j).printTransactionList();
-            }
-        }
-    }
-
     public String getBranchName(){
         return this.branchName;
+    }
+
+    public ArrayList<Customer> getCustomerList(){
+        return this.customerList;
     }
 
 }

@@ -3,10 +3,11 @@ import java.util.ArrayList;
 public class Bank {
 
     private String bankName;
-    private ArrayList<Branch> branchList = new ArrayList<Branch>();
+    private ArrayList<Branch> branchList;
 
     public Bank(String bankName){
         this.bankName = bankName;
+        this.branchList = new ArrayList<Branch>();
     }
 
     public void printInstructions(){
@@ -21,37 +22,46 @@ public class Bank {
     }
 
     public boolean addBranch(String branchName){
-        if(!isOnFile(branchName)){
-            branchList.add(new Branch(branchName));
+        if(findBranch(branchName) == null){
+            this.branchList.add(new Branch(branchName));
             return true;
         }
-        else{
-            return false;
-        }
+        return false;
     }
 
-    public boolean addCustomer(Branch myBranch, String customerName, double transaction) {
-        if (!isOnFile(customerName)) {
-            if (myBranch.addCustomer(customerName, transaction)) {
-                return true;
-            } else {
-                return false;
+    public boolean addCustomer(String branchName, String customerName, double transaction) {
+        Branch branch = (findBranch(branchName));
+        if(branch != null) {
+            return branch.addCustomer(customerName, transaction);
+        }
+        return false;
+    }
+
+    public boolean addTransaction(String branchName, String customerName, double transaction){
+        if(findBranch(branchName) != null){
+            return findBranch(branchName).addTransaction(customerName, transaction);
+        }
+        return false;
+    }
+
+    public boolean listCustomers(String branchName, boolean showTransactions){
+        if(findBranch(branchName) != null){
+            ArrayList<Customer> branchCustomers = findBranch(branchName).getCustomerList();
+            for(int i = 0; i < branchCustomers.size(); i++){
+                System.out.println(branchCustomers.get(i).getCustomerName() + "\n");
+                    if(showTransactions){
+                        ArrayList<Double> customerTransactions =
+                                branchCustomers.get(i).getTransactionList();
+                        for(int j = 0; j < customerTransactions.size(); j++){
+                            System.out.println((j + 1) + ". " + customerTransactions.get(j) + "\n");
+                        }
+                    }
             }
-        } else {
-            return false;
-        }
-    }
-    public boolean addTransaction(Branch myBranch, String customerName, double transaction){
-        if(myBranch.addTransaction(customerName, transaction)){
             return true;
         }
         else{
             return false;
         }
-    }
-
-    public void listCustomers(Branch myBranch){
-        myBranch.listCustomers();
     }
 
     public void listBranches(){
@@ -60,31 +70,12 @@ public class Bank {
         }
     }
 
-    public Branch getBranch(String branchName){
+    public Branch findBranch(String branchName){
         for(int i = 0; i < branchList.size(); i++){
-            if(branchList.get(i).getBranchName().contains(branchName)){
-                return branchList.get(i);
+            if(this.branchList.get(i).getBranchName().equals(branchName)){
+                return this.branchList.get(i);
             }
         }
         return null;
     }
-
-    public boolean isOnFile(String branchName){
-        for(int i = 0; i < branchList.size(); i++){
-            if(branchList.get(i).getBranchName().contains(branchName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void listAllCustomers(){
-        for(int i = 0; i < branchList.size(); i++){
-            System.out.println(branchList.get(i).getBranchName());
-
-
-        }
-    }
-
-    //list customers and optionally a list of their transactions?
 }
